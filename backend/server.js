@@ -1,31 +1,37 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
 
-app.use(cors());
+// middleware
 app.use(express.json());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://task-management-app-one-self.vercel.app",
+    ],
+  }),
+);
 
-// ROUTES
+// routes
 const taskRoutes = require("./routes/taskRoutes");
 app.use("/api/tasks", taskRoutes);
 
-// TEST ROUTE
-app.get("/", (req, res) => {
-  res.send("Server is running 🚀");
-});
-
-// DB CONNECT
+// ✅ CONNECT TO MONGODB FIRST
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("DB connected"))
+  .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
 
-const PORT = process.env.PORT || 5000;
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on port ${process.env.PORT}`);
+});
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.get("/test", (req, res) => {
+  res.json({ ok: true });
 });
 
 // const express = require("express");
