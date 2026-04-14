@@ -11,12 +11,17 @@ connectDB();
 
 const app = express();
 
+app.use(express.json());
+
 app.use(
   cors({
-    origin: "https://task-management-app-one-self.vercel.app",
+    origin: [
+      "http://localhost:5173",
+      "https://task-management-app-one-self.vercel.app",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
   }),
 );
-app.use(express.json());
 
 app.use("/api/tasks", taskRoutes);
 
