@@ -6,7 +6,7 @@ function TaskList({ tasks, updateTask, deleteTask }) {
     updateTask(task._id, { status });
   };
 
-  const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedTask, setSelectedTask] = useState(null); //
 
   const editTask = (task) => {
     setSelectedTask(task);
@@ -81,22 +81,26 @@ function TaskList({ tasks, updateTask, deleteTask }) {
   }
 
   return (
-    <div className="flex gap-4">
-      <Column title="Pending" status="pending" color="text-yellow-600" />
-      <Column title="In Progress" status="in-progress" color="text-blue-600" />
-      <Column title="Completed" status="completed" color="text-green-600" />
-    </div>
-  );
+    <>
+      <div className="flex gap-4">
+        <Column title="Pending" status="pending" color="text-yellow-600" />
+        <Column
+          title="In Progress"
+          status="in-progress"
+          color="text-blue-600"
+        />
+        <Column title="Completed" status="completed" color="text-green-600" />
+      </div>
 
-  {
-    selectedTask && (
-      <EditModal
-        task={selectedTask}
-        onClose={() => setSelectedTask(null)}
-        onSave={updateTask}
-      />
-    );
-  }
+      {selectedTask && (
+        <EditModal
+          task={selectedTask}
+          onClose={() => setSelectedTask(null)}
+          onSave={updateTask}
+        />
+      )}
+    </>
+  );
 }
 
 export default TaskList;

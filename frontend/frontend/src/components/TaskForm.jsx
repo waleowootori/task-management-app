@@ -12,7 +12,7 @@ function TaskForm({ addTask }) {
     await addTask({
       title,
       priority,
-      status: "pending",
+      // status: "pending",
     });
 
     setTitle("");
@@ -36,7 +36,9 @@ function TaskForm({ addTask }) {
         <option value="high">High</option>
       </select>
 
-      <button className="bg-blue-600 text-white px-4 rounded">Add</button>
+      <button className="bg-blue-600 text-white px-4 rounded hover:bg-blue-700">
+        Add
+      </button>
     </form>
   );
 }

@@ -18,8 +18,7 @@ function App() {
 
   const addTask = async (taskData) => {
     await API.post("/", taskData);
-    toast.success("Task added");
-    fetchTasks();
+    fetchTasks(); // 🔥 ensures UI always matches backend
   };
 
   const updateTask = async (id, data) => {
