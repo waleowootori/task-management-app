@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 import API from "./services/api";
+import toast from "react-hot-toast";
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -17,7 +18,8 @@ function App() {
 
   const addTask = async (taskData) => {
     await API.post("/", taskData);
-    fetchTasks(); // 🔥 instant update
+    toast.success("Task added");
+    fetchTasks();
   };
 
   const updateTask = async (id, data) => {
@@ -27,12 +29,13 @@ function App() {
 
   const deleteTask = async (id) => {
     await API.delete(`/${id}`);
-    fetchTasks(); // instant UI update
+    toast.success("Task deleted");
+    fetchTasks();
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-200 p-6">
-      <div className="max-w-4xl mx-auto bg-white p-4 rounded shadow">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 p-6">
+      <div className="max-w-5xl mx-auto bg-white p-6 rounded-2xl shadow-lg">
         <h1 className="text-2xl font-bold mb-4 text-center">Task Manager</h1>
 
         <TaskForm addTask={addTask} />
