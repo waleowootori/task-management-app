@@ -33,17 +33,21 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-200 p-6">
-      <div className="max-w-5xl mx-auto bg-white p-6 rounded-2xl shadow-lg">
-        <h1 className="text-2xl font-bold mb-4 text-center">Task Manager</h1>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-linear-to-br from-indigo-200 via-purple-200 to-pink-200">
+      <div className="w-full max-w-5xl backdrop-blur-xl bg-white/30 border border-white/40 shadow-2xl rounded-3xl p-5 sm:p-8">
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+          Task Manager
+        </h1>
 
         <TaskForm addTask={addTask} />
 
-        <TaskList
-          tasks={tasks}
-          updateTask={updateTask}
-          deleteTask={deleteTask}
-        />
+        <div className="mt-6">
+          <TaskList
+            tasks={tasks}
+            updateTask={updateTask}
+            deleteTask={deleteTask}
+          />
+        </div>
       </div>
     </div>
   );
