@@ -8,13 +8,9 @@ function TaskList({ tasks, updateTask, deleteTask }) {
     updateTask(task._id, { status });
   };
 
-  const editTask = (task) => {
-    setSelectedTask(task);
-  };
-
   const Column = ({ title, status, color }) => (
-    <div className="w-full sm:w-1/3">
-      {/* Column Header */}
+    <div className="flex-1 min-w-70">
+      {/* Header */}
       <h2 className={`font-bold mb-4 text-center text-lg ${color}`}>{title}</h2>
 
       {/* Tasks */}
@@ -34,10 +30,8 @@ function TaskList({ tasks, updateTask, deleteTask }) {
                 hover:scale-[1.02] 
                 transition
               ">
-              {/* Title */}
               <p className="font-semibold text-gray-800">{task.title}</p>
 
-              {/* Priority Badge */}
               <span
                 className={`inline-block mt-2 text-xs px-3 py-1 rounded-full font-medium ${
                   task.priority === "high"
@@ -49,7 +43,6 @@ function TaskList({ tasks, updateTask, deleteTask }) {
                 {task.priority}
               </span>
 
-              {/* Actions */}
               <div className="flex flex-wrap gap-2 mt-4 text-xs">
                 <button
                   onClick={() => moveTask(task, "pending")}
@@ -89,8 +82,8 @@ function TaskList({ tasks, updateTask, deleteTask }) {
 
   return (
     <>
-      {/* Responsive Kanban Layout */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      {/* FIXED RESPONSIVE LAYOUT */}
+      <div className="flex flex-col lg:flex-row gap-4 overflow-x-auto">
         <Column title="Pending" status="pending" color="text-yellow-600" />
         <Column
           title="In Progress"
@@ -100,7 +93,6 @@ function TaskList({ tasks, updateTask, deleteTask }) {
         <Column title="Completed" status="completed" color="text-green-600" />
       </div>
 
-      {/* Edit Modal */}
       {selectedTask && (
         <EditModal
           task={selectedTask}
