@@ -1,5 +1,6 @@
 import { useState } from "react";
 import API from "../services/api";
+import toast from "react-hot-toast";
 
 function Login({ setUser, onClose }) {
   const [form, setForm] = useState({
@@ -14,12 +15,16 @@ function Login({ setUser, onClose }) {
       const res = await API.post("/auth/login", form);
 
       localStorage.setItem("token", res.data.token);
+      API.defaults.headers.common.Authorization = `Bearer ${res.data.token}`;
       setUser(res.data.user);
+      toast.success("Logged in successfully");
 
       onClose(); // close modal after login
     } catch (err) {
       console.error(err);
-      alert("Login failed");
+      const message =
+        err.response?.data || "Login failed. Please check your details.";
+      toast.error(message);
     }
   };
 

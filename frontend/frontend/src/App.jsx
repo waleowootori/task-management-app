@@ -11,16 +11,36 @@ function App() {
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [tasks, setTasks] = useState([]);
+  const hasToken = Boolean(localStorage.getItem("token"));
+
+  const handleAuthFailure = () => {
+    localStorage.removeItem("token");
+    delete API.defaults.headers.common.Authorization;
+    setUser(null);
+    setTasks([]);
+    setShowLogin(true);
+    toast.error("Your session has expired. Please log in again.");
+  };
 
   const fetchTasks = async () => {
-    const res = await API.get("/");
-    setTasks(res.data);
+    try {
+      const res = await API.get("/tasks");
+      setTasks(res.data);
+    } catch (error) {
+      if (error.response?.status === 401) {
+        handleAuthFailure();
+        return;
+      }
+      console.error("Failed to fetch tasks", error);
+      toast.error("Could not load tasks");
+    }
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      setUser({}); // simple restore
+      API.defaults.headers.common.Authorization = `Bearer ${token}`;
+      setUser({});
     }
   }, []);
 
@@ -31,19 +51,57 @@ function App() {
   }, [user]);
 
   const addTask = async (taskData) => {
-    await API.post("/", taskData);
-    fetchTasks(); // 🔥 ensures UI always matches backend
+    if (!hasToken) {
+      setShowLogin(true);
+      toast.error("Please log in before adding a task.");
+      return;
+    }
+
+    try {
+      const res = await API.post("/tasks", taskData);
+      setTasks((currentTasks) => [res.data, ...currentTasks]);
+      toast.success("Task added");
+    } catch (error) {
+      if (error.response?.status === 401) {
+        handleAuthFailure();
+        return;
+      }
+      console.error("Failed to add task", error);
+      toast.error("Could not add task. Please log in and try again.");
+    }
   };
 
   const updateTask = async (id, data) => {
-    await API.put(`/${id}`, data);
-    fetchTasks();
-  }; // 🔥 instant update
+    try {
+      const res = await API.put(`/tasks/${id}`, data);
+      setTasks((currentTasks) =>
+        currentTasks.map((task) => (task._id === id ? res.data : task)),
+      );
+    } catch (error) {
+      if (error.response?.status === 401) {
+        handleAuthFailure();
+        return;
+      }
+      console.error("Failed to update task", error);
+      toast.error("Could not update task");
+    }
+  };
 
   const deleteTask = async (id) => {
-    await API.delete(`/${id}`);
-    toast.success("Task deleted");
-    fetchTasks();
+    try {
+      await API.delete(`/tasks/${id}`);
+      setTasks((currentTasks) =>
+        currentTasks.filter((task) => task._id !== id),
+      );
+      toast.success("Task deleted");
+    } catch (error) {
+      if (error.response?.status === 401) {
+        handleAuthFailure();
+        return;
+      }
+      console.error("Failed to delete task", error);
+      toast.error("Could not delete task");
+    }
   };
 
   return (
@@ -72,7 +130,7 @@ function App() {
             Task Manager
           </h1>
 
-          <TaskForm addTask={addTask} />
+          <TaskForm addTask={addTask} isLoggedIn={Boolean(user)} />
 
           <div className="mt-6">
             <TaskList

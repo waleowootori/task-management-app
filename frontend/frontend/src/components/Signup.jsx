@@ -1,5 +1,6 @@
 import { useState } from "react";
 import API from "../services/api";
+import toast from "react-hot-toast";
 
 function Signup({ setUser, onClose }) {
   const [form, setForm] = useState({
@@ -14,20 +15,21 @@ function Signup({ setUser, onClose }) {
     try {
       const res = await API.post("/auth/signup", form);
 
-      // ✅ SAME FLOW AS LOGIN (important)
       localStorage.setItem("token", res.data.token);
+      API.defaults.headers.common.Authorization = `Bearer ${res.data.token}`;
       setUser(res.data.user);
+      toast.success("Account created successfully");
 
-      onClose(); // close modal after signup
+      onClose();
     } catch (err) {
       console.error(err);
-      alert("Signup failed");
+      const message = err.response?.data || "Signup failed. Please try again.";
+      toast.error(message);
     }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-      {/* Modal */}
       <div
         className="
         w-full max-w-md
@@ -40,19 +42,16 @@ function Signup({ setUser, onClose }) {
         text-white
         relative
       ">
-        {/* Close */}
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-white/70 hover:text-white text-xl">
-          ✕
+          x
         </button>
 
-        {/* Title */}
         <h2 className="text-2xl font-bold text-center mb-6">
-          Create Account ✨
+          Create Account
         </h2>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="text"

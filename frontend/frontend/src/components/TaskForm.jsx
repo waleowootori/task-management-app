@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function TaskForm({ addTask }) {
+function TaskForm({ addTask, isLoggedIn }) {
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("medium");
 
@@ -19,14 +19,22 @@ function TaskForm({ addTask }) {
   };
 
   return (
-    <form className="flex flex-col sm:flex-row gap-3 backdrop-blur-md bg-white/40 border border-white/40 p-4 rounded-2xl shadow-md">
+    <form
+      onSubmit={submitTask}
+      className="flex flex-col sm:flex-row gap-3 backdrop-blur-md bg-white/40 border border-white/40 p-4 rounded-2xl shadow-md">
       <input
         className="flex-1 p-3 rounded-xl bg-white/60 border border-white/50 outline-none focus:ring-2 focus:ring-purple-300"
-        placeholder="Enter a new task..."
+        placeholder={
+          isLoggedIn ? "Enter a new task..." : "Log in to add a new task"
+        }
         value={title}
+        disabled={!isLoggedIn}
         onChange={(e) => setTitle(e.target.value)}
       />
-      <button className=" w-full sm:w-auto px-5 py-3 rounded-xl bg-linear-to-r from-purple-500 to-pink-500 text-white font-semibold hover:opacity-90 transition">
+      <button
+        type="submit"
+        disabled={!isLoggedIn}
+        className=" w-full sm:w-auto px-5 py-3 rounded-xl bg-linear-to-r from-purple-500 to-pink-500 text-white font-semibold hover:opacity-90 transition">
         Add Task
       </button>
     </form>
